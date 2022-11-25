@@ -11,6 +11,7 @@ Utilice el archivo `data.csv` para resolver las preguntas.
 
 
 """
+import csv
 from io import open
 
 file = open('data.csv', 'r')
@@ -130,19 +131,27 @@ def pregunta_05():
         ("E", 9, 1),
     ]
     """
-    letras = {}
-    with open('data.csv', mode='r') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter='\t')
+    letras = []
+    colMax = []
+    colMin = []
+    maximos = []
+    with open('data.csv') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter='	')
         for row in csv_reader:
-            letra = row[0]
-            valor = int(row[1])
-            if not letra in letras:
-                letras[letra] = (valor, valor)
+            if(not row[0] in letras):
+                letras.append(row[0])
+                colMax.append(int(row[1]))
+                colMin.append(int(row[1]))
             else:
-                letras[letra] = (max(valor, letras[letra][0]),
-                                 min(valor, letras[letra][1]))
-    result = sorted([(k, v[0], v[1]) for k, v in letras.items()])
-    return result
+                if(colMax[letras.index(row[0])] < int(row[1])):
+                    colMax[letras.index(row[0])] = int(row[1])
+                if(colMin[letras.index(row[0])] > int(row[1])):
+                    colMin[letras.index(row[0])] = int(row[1])
+    for letra in letras:
+        maximos.append(
+            (letra, colMax[letras.index(letra)], colMin[letras.index(letra)]))
+    maximos.sort(reverse=False)
+    return maximos
 
 
 def pregunta_06():
@@ -165,22 +174,29 @@ def pregunta_06():
         ("jjj", 5, 17),
     ]
     """
-    resultado_diccionario = {}
-    with open('data.csv', mode='r') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter='\t')
+    letras=[]
+    colMax = []
+    colMin = []
+    dic = []
+    with open('data.csv') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter='	')
         for row in csv_reader:
-            registros = row[4].split(",")
-            for registro in registros:
-                clave, valor = registro.split(":")
-                valor = int(valor)
-                if not clave in resultado_diccionario:
-                    resultado_diccionario[clave] = (valor, valor)
+            for cod in row[4].split(','):
+                letra = cod.split(':')[0]
+                codigo = cod.split(':')[1]
+                if(not letra in letras):
+                    letras.append(letra)
+                    colMax.append(int(codigo))
+                    colMin.append(int(codigo))
                 else:
-                    resultado_diccionario[clave] = (min(valor, resultado_diccionario[clave][0]), max(
-                        valor, resultado_diccionario[clave][1]))
-    result = sorted([(k, v[0], v[1])
-                    for k, v in resultado_diccionario.items()])
-    return result
+                    if(colMax[letras.index(letra)]<int(codigo)):
+                        colMax[letras.index(letra)]=int(codigo)
+                    if(colMin[letras.index(letra)]>int(codigo)):
+                        colMin[letras.index(letra)]=int(codigo)
+    for letra in letras:
+        dic.append((letra,colMin[letras.index(letra)],colMax[letras.index(letra)]))
+    dic.sort(reverse=False)
+    return dic
 
 
 def pregunta_07():
@@ -202,18 +218,21 @@ def pregunta_07():
         (9, ["A", "B", "E", "A", "A", "C"]),
     ]
     """
-    associacion = {}
-    with open('data.csv', mode='r') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter='\t')
+    numeros = []
+    letras = []
+    reg = []
+    with open('data.csv') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter='	')
         for row in csv_reader:
-            letra = row[0]
-            numero = row[1]
-            if not numero in associacion:
-                associacion[numero] = [letra]
+            if(not int(row[1]) in numeros):
+                numeros.append(int(row[1]))
+                letras.append([row[0]])
             else:
-                associacion[numero].append(letra)
-    result = sorted([(int(k), v) for k, v in associacion.items()])
-    return result
+                letras[numeros.index(int(row[1]))].append(row[0])
+    for numero in numeros:
+        reg.append((numero, letras[numeros.index(numero)]))
+    reg.sort(reverse=False)
+    return reg
 
 
 def pregunta_08():
@@ -236,19 +255,25 @@ def pregunta_08():
         (9, ["A", "B", "C", "E"]),
     ]
     """
-    associacion = {}
-    with open('data.csv', mode='r') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter='\t')
+    numeros = []
+    letras = []
+    reg = []
+    with open('data.csv') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter='	')
         for row in csv_reader:
-            letra = row[0]
-            numero = row[1]
-            if not numero in associacion:
-                associacion[numero] = set(letra)
+            if(not int(row[1]) in numeros):
+                numeros.append(int(row[1]))
+                letras.append([row[0]])
             else:
-                associacion[numero].add(letra)
-    result = sorted([(int(k), sorted(list(v)))
-                    for k, v in associacion.items()])
-    return result
+                if(not row[0] in letras[numeros.index(int(row[1]))]):
+                    letras[numeros.index(int(row[1]))].append(row[0])
+
+    for numero in numeros:
+        order = letras[numeros.index(numero)]
+        order.sort()
+        reg.append((numero, order))
+    reg.sort(reverse=False)
+    return reg
 
 
 def pregunta_09():
@@ -269,18 +294,21 @@ def pregunta_09():
         "jjj": 18,
     }
     """
-    resultado_diccionario = {}
-    with open('data.csv', mode='r') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter='\t')
+    columna = []
+    letras = []
+    dictionario = {}
+    with open('data.csv') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter='	')
         for row in csv_reader:
-            registros = row[4].split(",")
-            for registro in registros:
-                clave, _ = registro.split(":")
-                if not clave in resultado_diccionario:
-                    resultado_diccionario[clave] = 1
-                else:
-                    resultado_diccionario[clave] += 1
-    return resultado_diccionario
+            for cod in row[4].split(','):
+                letra = cod.split(':')[0]
+                columna.append(letra)
+                if(not letra in letras):
+                    letras.append(letra)
+    letras.sort()
+    for letra in letras:
+        dictionario.update({letra: columna.count(letra)})
+    return dictionario
 
 
 def pregunta_10():
@@ -298,13 +326,16 @@ def pregunta_10():
         ("E", 3, 3),
     ]
     """
-    lista_resultado = []
-    with open('data.csv', mode='r') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter='\t')
+    letras = []
+    with open('data.csv') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter='	')
         for row in csv_reader:
-            tupla = (row[0], len(row[3].split(",")), len(row[4].split(",")))
-            lista_resultado.append(tupla)
-    return lista_resultado
+            col4 = row[3].split(",")
+            col4 = len(col4)
+            col5 = row[4].split(",")
+            col5 = len(col5)
+            letras.append((row[0], col4, col5))
+    return letras
 
 
 def pregunta_11():
@@ -322,19 +353,17 @@ def pregunta_11():
         "g": 35,
     }
     """
-    resultado_diccionario = {}
-    with open('data.csv', mode='r') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter='\t')
+    letras = {}
+    with open('data.csv') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter='	')
         for row in csv_reader:
-            elementos = row[3].split(",")
-            valor = int(row[1])
-            for elemento in elementos:
-                if not elemento in resultado_diccionario:
-                    resultado_diccionario[elemento] = valor
+            for letra in row[3].split(","):
+                if(not letra in letras.keys()):
+                    letras.update({letra: int(row[1])})
                 else:
-                    resultado_diccionario[elemento] += valor
-
-    return resultado_diccionario
+                    letras[letra] += int(row[1])
+    dicc = sorted(letras.items())
+    return dict(dicc)
 
 
 def pregunta_12():
@@ -350,17 +379,19 @@ def pregunta_12():
         'E': 324
     }
     """
-    resultado_diccionario = {}
-    with open('data.csv', mode='r') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter='\t')
+    letras = {}
+    with open('data.csv') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter='	')
         for row in csv_reader:
-            elementos = row[4].split(",")
-            clave = row[0]
-            for elemento in elementos:
-                _, valor = elemento.split(":")
-                valor = int(valor)
-                if not clave in resultado_diccionario:
-                    resultado_diccionario[clave] = valor
+            letra = row[0]
+            for codigo in row[4].split(","):
+                numero = int(codigo.split(":")[1])
+                if(not letra in letras.keys()):
+                    letras.update({letra: numero})
                 else:
-                    resultado_diccionario[clave] += valor
-    return resultado_diccionario
+                    letras[letra] += numero
+    dicc = sorted(letras.items())
+    return dict(dicc)
+
+
+print(pregunta_12())
