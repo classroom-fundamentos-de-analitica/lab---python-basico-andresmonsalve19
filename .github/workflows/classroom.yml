@@ -1,16 +1,140 @@
-name: GitHub Classroom Workflow
-
-on: [push]
-
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
 permissions:
   checks: write
   actions: read
   contents: read
-
 jobs:
-  build:
-    name: Autograding
+  run-autograding-tests:
     runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
     steps:
-      - uses: actions/checkout@v2
-      - uses: education/autograding@v1
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Pregunta 01
+      id: pregunta-01
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pregunta 01
+        setup-command: ''
+        command: python3 tests.py 01
+        timeout: 1
+        max-score: 1
+    - name: Pregunta 02
+      id: pregunta-02
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pregunta 02
+        setup-command: ''
+        command: python3 tests.py 02
+        timeout: 1
+        max-score: 1
+    - name: Pregunta 03
+      id: pregunta-03
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pregunta 03
+        setup-command: ''
+        command: python3 tests.py 03
+        timeout: 1
+        max-score: 1
+    - name: Pregunta 04
+      id: pregunta-04
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pregunta 04
+        setup-command: ''
+        command: python3 tests.py 04
+        timeout: 1
+        max-score: 1
+    - name: Pregunta 05
+      id: pregunta-05
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pregunta 05
+        setup-command: ''
+        command: python3 tests.py 05
+        timeout: 10
+        max-score: 1
+    - name: Pregunta 06
+      id: pregunta-06
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pregunta 06
+        setup-command: ''
+        command: python3 tests.py 06
+        timeout: 1
+        max-score: 1
+    - name: Pregunta 07
+      id: pregunta-07
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pregunta 07
+        setup-command: ''
+        command: python3 tests.py 07
+        timeout: 1
+        max-score: 1
+    - name: Pregunta 08
+      id: pregunta-08
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pregunta 08
+        setup-command: ''
+        command: python3 tests.py 08
+        timeout: 1
+        max-score: 1
+    - name: Pregunta 09
+      id: pregunta-09
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pregunta 09
+        setup-command: ''
+        command: python3 tests.py 09
+        timeout: 1
+        max-score: 1
+    - name: Pregunta 10
+      id: pregunta-10
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pregunta 10
+        setup-command: ''
+        command: python3 tests.py 10
+        timeout: 10
+        max-score: 1
+    - name: Pregunta 11
+      id: pregunta-11
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pregunta 11
+        setup-command: ''
+        command: python3 tests.py 11
+        timeout: 1
+        max-score: 1
+    - name: Pregunta 12
+      id: pregunta-12
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pregunta 12
+        setup-command: ''
+        command: python3 tests.py 12
+        timeout: 1
+        max-score: 1
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        PREGUNTA-01_RESULTS: "${{steps.pregunta-01.outputs.result}}"
+        PREGUNTA-02_RESULTS: "${{steps.pregunta-02.outputs.result}}"
+        PREGUNTA-03_RESULTS: "${{steps.pregunta-03.outputs.result}}"
+        PREGUNTA-04_RESULTS: "${{steps.pregunta-04.outputs.result}}"
+        PREGUNTA-05_RESULTS: "${{steps.pregunta-05.outputs.result}}"
+        PREGUNTA-06_RESULTS: "${{steps.pregunta-06.outputs.result}}"
+        PREGUNTA-07_RESULTS: "${{steps.pregunta-07.outputs.result}}"
+        PREGUNTA-08_RESULTS: "${{steps.pregunta-08.outputs.result}}"
+        PREGUNTA-09_RESULTS: "${{steps.pregunta-09.outputs.result}}"
+        PREGUNTA-10_RESULTS: "${{steps.pregunta-10.outputs.result}}"
+        PREGUNTA-11_RESULTS: "${{steps.pregunta-11.outputs.result}}"
+        PREGUNTA-12_RESULTS: "${{steps.pregunta-12.outputs.result}}"
+      with:
+        runners: pregunta-01,pregunta-02,pregunta-03,pregunta-04,pregunta-05,pregunta-06,pregunta-07,pregunta-08,pregunta-09,pregunta-10,pregunta-11,pregunta-12
